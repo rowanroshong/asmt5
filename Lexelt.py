@@ -145,7 +145,29 @@ def get_key(fp, data):
 
 
 def main(args):
-    ...
+    trainexamplesfile = args.traindata
+    testexamplesfile = args.testdata
+    trainlabelfile = args.trainkey
+    testlabelfile = args.testkey
+
+    # train_fp = open(trainexamplesfile, "r")
+    train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    train_data = get_data(train_fp)
+    print(train_data.keys())
+    print(train_data["smell.v"].keys())
+
+    this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
+    print(this_instance)
+    print(" ".join(this_instance.words))
+    heads = this_instance.heads
+    print(this_instance.words[heads[0]])
+    this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
+    print(this_instance.heads)
+
+    get_key(trainkey_fp, train_data)
+    print(train_data["smell.v"].get('smell.v.bnc.00018122').answers)
+    print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
 
 
 if __name__ == "__main__":
@@ -172,9 +194,10 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    main(args)
 
     # Helping you out -- launch the debugger if something goes wrong!
-    import ipdb
-
-    with ipdb.launch_ipdb_on_exception():
-        main(args)
+    # import ipdb
+    #
+    # with ipdb.launch_ipdb_on_exception():
+    #     main(args)
