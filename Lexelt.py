@@ -41,15 +41,38 @@ class LexElt:
     def get_instance(self, instance_id):
         return self._instances[instance_id]
 
-    # Start functions that students should write.
     def pos(self):
-        ...
+        """
+        Returns the part of speech of a LexElt object.
+        type self: LexElt
+        rtype: str
+        """
+        return self.key.split('.')[1]
 
     def num_headwords(self):
-        ...
+        """
+        Returns a list with the number of headwords in each instance of a LexElt object.
+        type self: LexElt
+        rtype count_list: List[Int]
+        """
+        count_dict = {}
+        for key in self.keys():
+            count_dict[key] = len(self.get(key).heads)
+        count_list = list(count_dict.values())
+        return count_list
 
     def num_answers(self):
-        ...
+        """
+        Returns a list with the number of answers in each instance of a LexElt object.
+        type self: LexElt
+        rtype answer_list: List[Int]
+        """
+        count_dict = {}
+        for key in self.keys():
+            count_dict[key] = len(self.get(key).answers)
+        count_list = list(count_dict.values())
+        return count_list
+
 
     def get_all_senses(self):
         ...
@@ -145,10 +168,32 @@ def get_key(fp, data):
 
 
 def main(args):
-    ...
+    # Part 1.1
+
+    import Lexelt
+    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    train_data = get_data(train_fp)
+    train_data.keys()
+    # this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
+    # heads = this_instance.heads
+    # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
+    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    get_key(trainkey_fp, train_data)
+    print('hello')
+    print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
+    print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
+    lexelt = train_data["activate.v"]
+    # print(train_data["activate.v"].answers)
+    # print(lexelt.pos())
+    # print(lexelt.num_headwords())
+    print(lexelt.num_answers())
+
+
+
 
 
 if __name__ == "__main__":
+    main('test')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--traindata",
@@ -174,7 +219,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Helping you out -- launch the debugger if something goes wrong!
-    import ipdb
-
-    with ipdb.launch_ipdb_on_exception():
-        main(args)
+    # import ipdb
+    #
+    # with ipdb.launch_ipdb_on_exception():
+    #     main(args)
