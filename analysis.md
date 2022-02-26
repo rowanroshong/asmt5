@@ -7,5 +7,7 @@ fontsize: 12pt
 
 CMPU 366 Assignment 5
 
-(Your Names Here)
+(Seamus Gould and Rowan Roshong)
+
+
 

@@ -55,10 +55,10 @@ class LexElt:
         type self: LexElt
         rtype count_list: List[Int]
         """
-        count_dict = {}
+
+        count_list = []
         for key in self.keys():
-            count_dict[key] = len(self.get(key).heads)
-        count_list = list(count_dict.values())
+            count_list.append(len(self.get(key).heads))
         return count_list
 
     def num_answers(self):
@@ -67,21 +67,41 @@ class LexElt:
         type self: LexElt
         rtype answer_list: List[Int]
         """
-        count_dict = {}
+        count_list = []
         for key in self.keys():
-            count_dict[key] = len(self.get(key).answers)
-        count_list = list(count_dict.values())
+            count_list.append(len(self.get(key).answers))
         return count_list
 
 
     def get_all_senses(self):
-        ...
+        """
+        Returns a single list containing all of the senses of all of the instances of a LexElt object. Excludes "U" senses.
+        Note that these can be listed either as numerical IDs or longer codes, depending on the data source.
+        (Wordsmyth uses just an integer ID like "38201", while WordNet expresses metadata in the sense ID like
+        "organization%1:04:02::".)
+        type self: LexElt
+        rtype senses_list: List[Int]
+        """
+        senses_list = []
+        for key in self.keys():
+            senses_list.append(self.get(key).answers)
+        senses_list = [item for sublist in senses_list for item in sublist if item != 'U']
+        return senses_list
 
     def count_unique_senses(self):
-        ...
+        """
+        Returns the number of unique senses used by at least one of the instances of a LexElt object. Excludes "U".
+        :return: The number of unique senses in the question.
+        """
+        return len(set(self.get_all_senses()))
 
     def most_frequent_sense(self):
-        ...
+        """
+        Returns the most frequent sense of a word in a given context
+        :return: The most frequent sense of the word.
+        """
+        maximum = max(self.get_all_senses(), key=self.get_all_senses().count)
+        return maximum
 
     def get_features(self, feature_names=None):
         ...
@@ -141,12 +161,11 @@ class LexEltInstance:
 
 def get_data(fp):
     """
-    Input: input file pointer (training or test)
+    Given a file pointer to a training or test file, return a dictionary mapping lexelts to LexElt objects
 
-    Return: a dictionary mapping "lexelts" to LexElt objects.
-    Each LexElt object stores its own instances.
+    :param fp: the file pointer to the training or test data
+    :return: A dictionary mapping lexelts to LexElt objects.
     """
-
     soup = bs("<doc>{}</doc>".format(fp.read()), "xml")
 
     return dict(
@@ -179,16 +198,27 @@ def main(args):
     # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
     trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
     get_key(trainkey_fp, train_data)
-    print('hello')
-    print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
-    print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
-    lexelt = train_data["activate.v"]
+    # print('hello')
+    # print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
+    # print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
+    # lexelt = train_data["activate.n"]
+    # print(lexelt.count_unique_senses())
     # print(train_data["activate.v"].answers)
     # print(lexelt.pos())
     # print(lexelt.num_headwords())
-    print(lexelt.num_answers())
-
-
+    # print(lexelt.num_answers())
+    # print(lexelt.get_all_senses())
+    # print(lexelt.count_unique_senses())
+    # print(lexelt.most_frequent_sense())
+    acc = 0.0
+    total_headwords = 0
+    for words in train_data.keys():
+        lexelt = train_data[words]
+        senses = lexelt.count_unique_senses()
+        num_heads = sum(lexelt.num_headwords())
+        total_headwords += num_heads
+        acc +=  num_heads / senses
+    print(acc/total_headwords)
 
 
 
