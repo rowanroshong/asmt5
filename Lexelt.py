@@ -55,7 +55,6 @@ class LexElt:
         type self: LexElt
         rtype count_list: List[Int]
         """
-
         count_list = []
         for key in self.keys():
             count_list.append(len(self.get(key).heads))
@@ -210,15 +209,26 @@ def main(args):
     # print(lexelt.get_all_senses())
     # print(lexelt.count_unique_senses())
     # print(lexelt.most_frequent_sense())
-    acc = 0.0
-    total_headwords = 0
-    for words in train_data.keys():
-        lexelt = train_data[words]
-        senses = lexelt.count_unique_senses()
-        num_heads = sum(lexelt.num_headwords())
-        total_headwords += num_heads
-        acc +=  num_heads / senses
-    print(acc/total_headwords)
+    # acc = 0.0
+    # total_headwords = 0
+    # for words in train_data.keys():
+    #     lexelt = train_data[words]
+    #     make_sense = lexelt.get_all_senses()
+    #     all_senses = Counter(make_sense)
+    #     acc += (all_senses.most_common(1)[0][1]) / len(lexelt.get_all_senses()) * sum(lexelt.num_headwords())
+    #     total_headwords += sum(lexelt.num_headwords())
+    #
+    test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
+    test_data = get_data(test_fp)
+    lexelt = test_data['organization.n']
+    testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
+    lexelt_train = train_data['organization.n']
+    get_key(testkey_fp, test_data)
+    distinct_train = set(lexelt.get_all_senses())
+    distinct_test = set(lexelt_train.get_all_senses())
+    print(distinct_train)
+    print(distinct_test)
+
 
 
 
