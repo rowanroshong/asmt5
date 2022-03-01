@@ -104,6 +104,7 @@ class LexElt:
 
     def get_features(self, feature_names=None):
         features = []
+        features.extend(feature_names)
         for instance in self.instances():
             instance.make_features()
             features.extend(instance.features)
@@ -120,16 +121,22 @@ class LexElt:
 
     def get_targets(self, labels=None):
         answers = []
-        for instance in self.instances():
-            answers.append(instance.answers[0])
-        answers = list(set(answers))
-        answers.sort()
+        if labels is not None:
+            answers = labels
+        else:
+            for instance in self.instances():
+                answers.append(instance.answers[0])
+            answers = list(set(answers))
+            answers.sort()
 
         array = numpy.zeros(len(self.instances()))
 
         for i, instance in enumerate(self.instances()):
             first_instance_answer = instance.answers[0]
-            array[i] = answers.index(first_instance_answer)
+            try:
+                array[i] = answers.index(first_instance_answer)
+            except ValueError:
+                array[i] = -1
         return answers, array
 
 
@@ -167,26 +174,43 @@ class LexEltInstance:
         return array
 
     def bow_features(self):
+        '''
+        Return a Counter object over all of the unigrams in the instance. This will include punctuation.
+        rtype: Counter([str])
+        '''
         return Counter(self.words)
 
     def colloc_features(self):
+        '''
+        Return a Counter object over all of the collocational features (bigrams and trigrams) for the instance. This
+        will also include punctuation.
+        rtype: Counter([str])
+        '''
         bigram_counter = self.bigrams()
         trigram_counter = self.trigrams()
         return bigram_counter + trigram_counter
 
 
     def make_features(self):
+        '''
+        Combine the output of bow_features and colloc_features into a single Counter, and store that Counter
+        as a features attribute of the LexEltInstance object (self).
+        '''
         bow_features = self.bow_features()
         colloc_features = self.colloc_features()
         self.features = bow_features + colloc_features
 
     def get_feature_names(self):
+        '''
+        Return all of the keys of the object’s features attribute.
+        rtype: List[str]
+        '''
         return self.features.keys()
 
     def bigrams(self):
         '''
         Returns bigrams of a LexEltInstance
-        rtype bigrams: Counter([Strings])
+        rtype bigrams: Counter([str])
         '''
         bigrams = Counter([])
         heads = self.heads
@@ -210,7 +234,7 @@ class LexEltInstance:
     def trigrams(self):
         '''
         Returns trigrams of a LexEltInstance
-        rtype trigrams: Counter([Strings])
+        rtype trigrams: Counter([str])
         '''
         trigrams = Counter([])
         heads = self.heads
@@ -337,11 +361,11 @@ def main(args):
     print(this_instance.to_vector(["and", "types", "system_are_activated"]))
     print()
 
-    feature_names, X_train = lexelt.get_features()
+    feature_names, X_train = lexelt.get_features(feature_names=["Snuffaluffagus"])
     print(feature_names)
     print(X_train)
     print(X_train.shape)
-    answer_labels, Y_train = lexelt.get_targets()
+    answer_labels, Y_train = lexelt.get_targets(labels=['38201', 'U'])
     print(answer_labels)
     print(Y_train)
 
