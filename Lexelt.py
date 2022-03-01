@@ -137,25 +137,72 @@ class LexEltInstance:
 
     # Start functions that students should write.
     def to_vector(self, feature_list):
-        ...
+        length = len(feature_list)
+
 
     def bow_features(self):
-        ...
+        return Counter(self.words)
 
     def colloc_features(self):
-        ...
+        bigram_counter = self.bigrams()
+        trigram_counter = self.trigrams()
+        return bigram_counter + trigram_counter
+
 
     def make_features(self):
-        ...
+        bow_features = self.bow_features()
+        colloc_features = self.colloc_features()
+        self.features = bow_features + colloc_features
 
     def get_feature_names(self):
-        ...
+        return self.features.keys()
 
     def bigrams(self):
-        ...
+        bigrams = Counter([])
+        heads = self.heads
+        for head in heads:
+            # Bigram 1
+            try:
+                bigram1 = '_'.join(self.words[head-1:head+1])
+                bigrams.update([bigram1])
+            except IndexError:
+                pass
+
+            # Bigram 2
+            try:
+                bigram2 = '_'.join(self.words[head:head+2])
+                bigrams.update([bigram2])
+            except IndexError:
+                pass
+
+        return bigrams
 
     def trigrams(self):
-        ...
+        trigrams = Counter([])
+        heads = self.heads
+        for head in heads:
+            # Trigram 1
+            try:
+                bigram1 = '_'.join(self.words[head-2:head + 1])
+                trigrams.update([bigram1])
+            except IndexError:
+                pass
+
+            # Trigram 2
+            try:
+                bigram2 = '_'.join(self.words[head-1:head + 2])
+                trigrams.update([bigram2])
+            except IndexError:
+                pass
+
+            # Trigram 3
+            try:
+                bigram3 = '_'.join(self.words[head:head + 3])
+                trigrams.update([bigram3])
+            except IndexError:
+                pass
+
+        return trigrams
 
 
 def get_data(fp):
@@ -189,18 +236,20 @@ def main(args):
     # Part 1.1
 
     import Lexelt
-    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
     train_data = get_data(train_fp)
     train_data.keys()
     # this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
     # heads = this_instance.heads
     # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
-    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    # trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
     get_key(trainkey_fp, train_data)
     # print('hello')
     # print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
     # print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
-    # lexelt = train_data["activate.n"]
+    # lexelt = train_data["activate.v"]
     # print(lexelt.count_unique_senses())
     # print(train_data["activate.v"].answers)
     # print(lexelt.pos())
@@ -209,25 +258,48 @@ def main(args):
     # print(lexelt.get_all_senses())
     # print(lexelt.count_unique_senses())
     # print(lexelt.most_frequent_sense())
+
+    # train_most_common_senses = {}
     # acc = 0.0
     # total_headwords = 0
     # for words in train_data.keys():
     #     lexelt = train_data[words]
     #     make_sense = lexelt.get_all_senses()
     #     all_senses = Counter(make_sense)
-    #     acc += (all_senses.most_common(1)[0][1]) / len(lexelt.get_all_senses()) * sum(lexelt.num_headwords())
+    #     train_most_common_senses[words] = all_senses.most_common(1)[0][0]
+    #     acc += (all_senses.most_common(1)[0][1]) / len(make_sense) * sum(lexelt.num_headwords())
     #     total_headwords += sum(lexelt.num_headwords())
-    #
-    test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
+    # print(acc/total_headwords)
+
+    test_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test", "r")
+    # test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
     test_data = get_data(test_fp)
-    lexelt = test_data['organization.n']
-    testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
-    lexelt_train = train_data['organization.n']
+    # lexelt = test_data['organization.n']
+    testkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test.key", "r")
+    # testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
     get_key(testkey_fp, test_data)
-    distinct_train = set(lexelt.get_all_senses())
-    distinct_test = set(lexelt_train.get_all_senses())
-    print(distinct_train)
-    print(distinct_test)
+
+    # Question 11
+    # for words in test_data.keys():
+    #     lexelt = test_data[words]
+    #     make_sense = lexelt.get_all_senses()
+    #     all_senses = Counter(make_sense)
+    #     test_most_common_sense = all_senses.most_common(1)[0][0]
+
+
+    # lexelt_train = train_data['organization.n']
+    # get_key(testkey_fp, test_data)
+    # distinct_train = set(lexelt.get_all_senses())
+    # distinct_test = set(lexelt_train.get_all_senses())
+    # print(distinct_train)
+    # print(distinct_test)
+
+    # Part 2 stuff
+    lexelt = train_data['activate.v']
+    this_instance = lexelt.get("activate.v.bnc.00044852")
+    this_instance.make_features()
+    print(this_instance.features)
+    print(this_instance.get_feature_names())
 
 
 
