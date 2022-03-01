@@ -121,7 +121,7 @@ class LexElt:
     def get_targets(self, labels=None):
         answers = []
         for instance in self.instances():
-            answers.extend(instance.answers)
+            answers.append(instance.answers[0])
         answers = list(set(answers))
         answers.sort()
 
@@ -270,15 +270,15 @@ def main(args):
     # Part 1.1
 
     import Lexelt
-    train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
-    # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    # train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
     train_data = get_data(train_fp)
     train_data.keys()
     # this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
     # heads = this_instance.heads
     # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
-    trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
-    # trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    # trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
     get_key(trainkey_fp, train_data)
     # print('hello')
     # print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
@@ -305,12 +305,12 @@ def main(args):
     #     total_headwords += sum(lexelt.num_headwords())
     # print(acc/total_headwords)
 
-    test_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test", "r")
-    # test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
+    # test_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test", "r")
+    test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
     test_data = get_data(test_fp)
     # lexelt = test_data['organization.n']
-    testkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test.key", "r")
-    # testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
+    # testkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test.key", "r")
+    testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
     get_key(testkey_fp, test_data)
 
     # Question 11
