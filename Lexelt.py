@@ -103,10 +103,34 @@ class LexElt:
         return maximum
 
     def get_features(self, feature_names=None):
-        ...
+        features = []
+        for instance in self.instances():
+            instance.make_features()
+            features.extend(instance.features)
+        features = list(set(features))
+        features.sort()
+
+        rows = len(self.instances())
+        columns = len(features)
+        array = numpy.zeros((rows, columns))
+
+        for i, instance in enumerate(self.instances()):
+            array[i] = instance.to_vector(features)
+        return features, array
 
     def get_targets(self, labels=None):
-        ...
+        answers = []
+        for instance in self.instances():
+            answers.extend(instance.answers)
+        answers = list(set(answers))
+        answers.sort()
+
+        array = numpy.zeros(len(self.instances()))
+
+        for i, instance in enumerate(self.instances()):
+            first_instance_answer = instance.answers[0]
+            array[i] = answers.index(first_instance_answer)
+        return answers, array
 
 
 class LexEltInstance:
@@ -138,7 +162,10 @@ class LexEltInstance:
     # Start functions that students should write.
     def to_vector(self, feature_list):
         length = len(feature_list)
-
+        array = numpy.zeros(length)
+        for i, feature in enumerate(feature_list):
+            array[i] = self.features[feature]
+        return array
 
     def bow_features(self):
         return Counter(self.words)
@@ -300,8 +327,16 @@ def main(args):
     this_instance.make_features()
     print(this_instance.features)
     print(this_instance.get_feature_names())
+    print(this_instance.to_vector(["and", "types", "system_are_activated"]))
+    print()
 
-
+    feature_names, X_train = lexelt.get_features()
+    print(feature_names)
+    print(X_train)
+    print(X_train.shape)
+    answer_labels, Y_train = lexelt.get_targets()
+    print(answer_labels)
+    print(Y_train)
 
 
 if __name__ == "__main__":
