@@ -159,7 +159,6 @@ class LexEltInstance:
     def has_answer(self, a):
         return a in self.answers
 
-    # Start functions that students should write.
     def to_vector(self, feature_list):
         length = len(feature_list)
         array = numpy.zeros(length)
@@ -185,6 +184,10 @@ class LexEltInstance:
         return self.features.keys()
 
     def bigrams(self):
+        '''
+        Returns bigrams of a LexEltInstance
+        rtype bigrams: Counter([Strings])
+        '''
         bigrams = Counter([])
         heads = self.heads
         for head in heads:
@@ -205,6 +208,10 @@ class LexEltInstance:
         return bigrams
 
     def trigrams(self):
+        '''
+        Returns trigrams of a LexEltInstance
+        rtype trigrams: Counter([Strings])
+        '''
         trigrams = Counter([])
         heads = self.heads
         for head in heads:
