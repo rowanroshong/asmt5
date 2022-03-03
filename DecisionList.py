@@ -15,19 +15,26 @@ class DecisionList(object):
         self.min_score = min_score
 
     def get_score(self, feature, label, X, y):
-        indices = numpy.where(y == label)
 
-        values = X[indices, 0]
+
+        feature_indices = numpy.where(X[:, feature])
+
+        x = y[feature_indices]
+
+        indices = numpy.where(x == label)
+
+        values = x[indices]
         print(values)
-        values = values[0]
 
-        summed_values = sum(values)
-        without_feature = len(values) - summed_values
+        summed_values = len(values)
+        without_feature = len(x) - summed_values
 
         summed_values += self.alpha
         without_feature += self.alpha
 
         score = math.log((summed_values/without_feature), 2)
+
+        print(score)
 
         return score
 

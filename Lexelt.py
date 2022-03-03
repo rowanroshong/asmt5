@@ -364,9 +364,9 @@ def main(args):
 
     feature_names, X_train = lexelt.get_features(feature_names=["Snuffaluffagus"])
     print(feature_names)
-    print(X_train)
+    print(len(X_train))
     print(X_train.shape)
-    answer_labels, Y_train = lexelt.get_targets(labels=['38201', 'U'])
+    answer_labels, Y_train = lexelt.get_targets()
     print(answer_labels)
     print(Y_train)
 
