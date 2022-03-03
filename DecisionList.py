@@ -16,23 +16,25 @@ class DecisionList(object):
 
     def get_score(self, feature, label, X, y):
         feature_indices = numpy.where(X[:, feature])
+        # Convert to numpy array so we can index from it
+        features_indices_list = numpy.asarray(feature_indices)[0]
 
-        x = y[feature_indices]
+        sense_at_feature_indices = y[feature_indices]
+        indices_sense_at = numpy.where(sense_at_feature_indices == label)
+        indices_sense_not_at = numpy.where(sense_at_feature_indices != label)
+        X_with_correct_sense = features_indices_list[indices_sense_at]
+        X_without_correct_sense = features_indices_list[indices_sense_not_at]
 
-        indices = numpy.where(x == label)
+        has_correct_sense = X[X_with_correct_sense, feature]
+        not_correct_sense = X[X_without_correct_sense, feature]
 
-        values = x[indices]
-        # print(values)
+        correct_sense = sum(has_correct_sense)
+        incorrect_sense = sum(not_correct_sense)
 
-        summed_values = len(values)
-        without_feature = len(x) - summed_values
+        correct_sense += self.alpha
+        incorrect_sense += self.alpha
 
-        summed_values += self.alpha
-        without_feature += self.alpha
-
-        score = math.log((summed_values/without_feature), 2)
-
-        # print(score)
+        score = math.log((correct_sense/incorrect_sense), 2)
 
         return score
 
@@ -86,7 +88,8 @@ def main(args):
     feature_names, X_train = lexelt.get_features()
     answer_labels, Y_train = lexelt.get_targets()
 
-    print(d.get_score(0, 1, X_train, Y_train))
+    print(d.get_score(878, 1, X_train, Y_train))
+    print(d.get_score(4482, 0, X_train, Y_train))
     d.fit(X_train, Y_train)
     print(d.rules[:10])
 
