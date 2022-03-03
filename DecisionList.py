@@ -15,8 +15,6 @@ class DecisionList(object):
         self.min_score = min_score
 
     def get_score(self, feature, label, X, y):
-
-
         feature_indices = numpy.where(X[:, feature])
 
         x = y[feature_indices]
@@ -24,7 +22,7 @@ class DecisionList(object):
         indices = numpy.where(x == label)
 
         values = x[indices]
-        print(values)
+        # print(values)
 
         summed_values = len(values)
         without_feature = len(x) - summed_values
@@ -34,12 +32,29 @@ class DecisionList(object):
 
         score = math.log((summed_values/without_feature), 2)
 
-        print(score)
+        # print(score)
 
         return score
 
     def fit(self, X, y):
-        ...
+        pairs_with_score = []
+
+        # Get unique and convert to int
+        y_set = set(y)
+        y_set = [int(item) for item in y_set]
+        num_features = len(X[0])
+
+        for label in y_set:
+            for k in range(0, num_features):
+                score = self.get_score(k, label, X, y)
+                if score >= self.min_score:
+                    pairs_with_score.append(((k, label), score))
+
+        # Sort by score
+        pairs_with_score.sort(key=lambda x: x[1], reverse=True)
+        # Get just the pairs
+        pairs = [a_tuple[0] for a_tuple in pairs_with_score]
+        self.rules = pairs
 
     def predict_one(self, vector):
         ...
@@ -55,10 +70,12 @@ def main(args):
     # test_data = get_data(args.testdata)
     # get_key(args.testkey, test_data)
 
-    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
     train_data = get_data(train_fp)
     train_data.keys()
-    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    # trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
     get_key(trainkey_fp, train_data)
 
     d = DecisionList(alpha=0.1, min_score=5, default_target=5)
@@ -69,7 +86,9 @@ def main(args):
     feature_names, X_train = lexelt.get_features()
     answer_labels, Y_train = lexelt.get_targets()
 
-    print(d.get_score(0, 0, X_train, Y_train))
+    print(d.get_score(0, 1, X_train, Y_train))
+    d.fit(X_train, Y_train)
+    print(d.rules[:10])
 
     ...
 
