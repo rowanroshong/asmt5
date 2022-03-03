@@ -59,11 +59,21 @@ class DecisionList(object):
         self.rules = pairs
 
     def predict_one(self, vector):
-        ...
+        indices = numpy.where(vector > 0)
+        indices = numpy.asarray(indices)[0]
+        for e in self.rules:
+            if e[0] in indices:
+                return e[1]
+        return self.default_target
+
+
 
     def predict(self, X):
-        ...
-
+        length = len(X)
+        array = numpy.zeros(length)
+        for i, vector in enumerate(X):
+            array[i] = self.predict_one(vector)
+        return array
 
 def main(args):
     # train_data = get_data(args.traindata)
@@ -72,12 +82,12 @@ def main(args):
     # test_data = get_data(args.testdata)
     # get_key(args.testkey, test_data)
 
-    train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
-    # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    # train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
     train_data = get_data(train_fp)
     train_data.keys()
-    trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
-    # trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    # trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
     get_key(trainkey_fp, train_data)
 
     d = DecisionList(alpha=0.1, min_score=5, default_target=5)
@@ -93,8 +103,19 @@ def main(args):
     d.fit(X_train, Y_train)
     print(d.rules[:10])
 
-    ...
+    d2 = DecisionList(alpha=0.1, min_score=5, default_target=5)
+    test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
+    test_data = get_data(test_fp)
+    lexelt2 = test_data['activate.v']
+    testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
+    get_key(testkey_fp, test_data)
+    test_feature_names, X_test = lexelt2.get_features()
+    test_answer_labels, Y_test = lexelt2.get_targets()
 
+    d2.fit(X_test, Y_test)
+    print(d2.predict_one(X_test[0]))
+    print(d2.predict_one(X_test[101]))
+    print(d2.predict(X_test))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
