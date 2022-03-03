@@ -104,7 +104,8 @@ class LexElt:
 
     def get_features(self, feature_names=None):
         features = []
-        features.extend(feature_names)
+        if feature_names:
+            features.extend(feature_names)
         for instance in self.instances():
             instance.make_features()
             features.extend(instance.features)
