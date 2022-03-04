@@ -112,8 +112,8 @@ def main(args):
         _, Y_test = test_lexelt.get_targets(targets)
 
         mfs = targets.index(lexelt.most_frequent_sense())
-        d = GaussianNB()
-        # d = DecisionList(default_target=mfs)
+        # d = GaussianNB()
+        d = DecisionList(default_target=mfs)
         d.fit(X_train, Y_train)
         y_hyp = d.predict(X_test)
 
