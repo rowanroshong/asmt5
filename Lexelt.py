@@ -106,9 +106,10 @@ class LexElt:
         features = []
         if feature_names:
             features.extend(feature_names)
-        for instance in self.instances():
-            instance.make_features()
-            features.extend(instance.features)
+        else:
+            for instance in self.instances():
+                instance.make_features()
+                features.extend(instance.features)
         features = list(set(features))
         features.sort()
 
@@ -292,83 +293,93 @@ def get_key(fp, data):
 
 
 def main(args):
-    # Part 1.1
+    train_data = get_data(args.traindata)
+    get_key(args.trainkey, train_data)
 
-    import Lexelt
-    # train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
-    train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
-    train_data = get_data(train_fp)
-    train_data.keys()
-    # this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
-    # heads = this_instance.heads
-    # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
-    # trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
-    trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
-    get_key(trainkey_fp, train_data)
-    # print('hello')
-    # print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
-    # print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
-    # lexelt = train_data["activate.v"]
-    # print(lexelt.count_unique_senses())
-    # print(train_data["activate.v"].answers)
-    # print(lexelt.pos())
-    # print(lexelt.num_headwords())
-    # print(lexelt.num_answers())
-    # print(lexelt.get_all_senses())
-    # print(lexelt.count_unique_senses())
-    # print(lexelt.most_frequent_sense())
+    test_data = get_data(args.testdata)
+    get_key(args.testkey, test_data)
 
-    # train_most_common_senses = {}
-    # acc = 0.0
-    # total_headwords = 0
-    # for words in train_data.keys():
-    #     lexelt = train_data[words]
-    #     make_sense = lexelt.get_all_senses()
-    #     all_senses = Counter(make_sense)
-    #     train_most_common_senses[words] = all_senses.most_common(1)[0][0]
-    #     acc += (all_senses.most_common(1)[0][1]) / len(make_sense) * sum(lexelt.num_headwords())
-    #     total_headwords += sum(lexelt.num_headwords())
-    # print(acc/total_headwords)
+    print("1. There are {} different lexelts.".format(len(train_data)))
 
-    # test_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test", "r")
-    test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
-    test_data = get_data(test_fp)
-    # lexelt = test_data['organization.n']
-    # testkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test.key", "r")
-    testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
-    get_key(testkey_fp, test_data)
-
-    # Question 11
-    # for words in test_data.keys():
-    #     lexelt = test_data[words]
-    #     make_sense = lexelt.get_all_senses()
-    #     all_senses = Counter(make_sense)
-    #     test_most_common_sense = all_senses.most_common(1)[0][0]
-
-
-    # lexelt_train = train_data['organization.n']
+    # # Our Debugging Below
+    #
+    # # Part 1.1
+    #
+    # import Lexelt
+    # # train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
+    # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
+    # train_data = get_data(train_fp)
+    # train_data.keys()
+    # # this_instance = train_data['smell.v'].get('smell.v.bnc.00018122')
+    # # heads = this_instance.heads
+    # # this_instance = train_data["smell.v"].get("smell.v.bnc.00006855")
+    # # trainkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train.key", "r")
+    # trainkey_fp = open("/data/366/senseval3/train/EnglishLS.train.key", "r")
+    # get_key(trainkey_fp, train_data)
+    # # print('hello')
+    # # print(train_data["smell.v"].get("smell.v.bnc.00018122").answers)
+    # # print(train_data["smell.v"].get("smell.v.bnc.00006855").answers)
+    # # lexelt = train_data["activate.v"]
+    # # print(lexelt.count_unique_senses())
+    # # print(train_data["activate.v"].answers)
+    # # print(lexelt.pos())
+    # # print(lexelt.num_headwords())
+    # # print(lexelt.num_answers())
+    # # print(lexelt.get_all_senses())
+    # # print(lexelt.count_unique_senses())
+    # # print(lexelt.most_frequent_sense())
+    #
+    # # train_most_common_senses = {}
+    # # acc = 0.0
+    # # total_headwords = 0
+    # # for words in train_data.keys():
+    # #     lexelt = train_data[words]
+    # #     make_sense = lexelt.get_all_senses()
+    # #     all_senses = Counter(make_sense)
+    # #     train_most_common_senses[words] = all_senses.most_common(1)[0][0]
+    # #     acc += (all_senses.most_common(1)[0][1]) / len(make_sense) * sum(lexelt.num_headwords())
+    # #     total_headwords += sum(lexelt.num_headwords())
+    # # print(acc/total_headwords)
+    #
+    # # test_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test", "r")
+    # test_fp = open("/data/366/senseval3/test/EnglishLS.test", "r")
+    # test_data = get_data(test_fp)
+    # # lexelt = test_data['organization.n']
+    # # testkey_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/test/EnglishLS.test.key", "r")
+    # testkey_fp = open("/data/366/senseval3/test/EnglishLS.test.key", "r")
     # get_key(testkey_fp, test_data)
-    # distinct_train = set(lexelt.get_all_senses())
-    # distinct_test = set(lexelt_train.get_all_senses())
-    # print(distinct_train)
-    # print(distinct_test)
-
-    # Part 2 stuff
-    lexelt = train_data['activate.v']
-    this_instance = lexelt.get("activate.v.bnc.00044852")
-    this_instance.make_features()
-    print(this_instance.features)
-    print(this_instance.get_feature_names())
-    print(this_instance.to_vector(["and", "types", "system_are_activated"]))
-    print()
-
-    feature_names, X_train = lexelt.get_features(feature_names=["Snuffaluffagus"])
-    print(feature_names)
-    print(len(X_train))
-    print(X_train.shape)
-    answer_labels, Y_train = lexelt.get_targets()
-    print(answer_labels)
-    print(Y_train)
+    #
+    # # Question 11
+    # # for words in test_data.keys():
+    # #     lexelt = test_data[words]
+    # #     make_sense = lexelt.get_all_senses()
+    # #     all_senses = Counter(make_sense)
+    # #     test_most_common_sense = all_senses.most_common(1)[0][0]
+    #
+    #
+    # # lexelt_train = train_data['organization.n']
+    # # get_key(testkey_fp, test_data)
+    # # distinct_train = set(lexelt.get_all_senses())
+    # # distinct_test = set(lexelt_train.get_all_senses())
+    # # print(distinct_train)
+    # # print(distinct_test)
+    #
+    # # Part 2 stuff
+    # lexelt = train_data['activate.v']
+    # this_instance = lexelt.get("activate.v.bnc.00044852")
+    # this_instance.make_features()
+    # print(this_instance.features)
+    # print(this_instance.get_feature_names())
+    # print(this_instance.to_vector(["and", "types", "system_are_activated"]))
+    # print()
+    #
+    # feature_names, X_train = lexelt.get_features(feature_names=['A', 'A_B', 'H_I'])
+    # print(feature_names)
+    # print(len(X_train))
+    # print(X_train.shape)
+    # answer_labels, Y_train = lexelt.get_targets()
+    # print(answer_labels)
+    # print(Y_train)
 
 
 if __name__ == "__main__":
