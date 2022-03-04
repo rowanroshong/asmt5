@@ -3,7 +3,7 @@
 import argparse
 import math
 import numpy
-from sklearn.naive_bayes import GaussianNB
+from sklearn.feature_extraction.text import TfidfTransformer
 from Lexelt import *
 from sklearn.naive_bayes import GaussianNB
 
@@ -102,11 +102,11 @@ def main(args):
         feature_names, X_train = lexelt.get_features()
         _, X_test = test_lexelt.get_features(feature_names)
 
-        # # tf_idf, comment in and out to use
-        # transformer = TfidfTransformer(smooth_idf=False)
-        # transformer.fit(X_train)
-        # X_train = transformer.transform(X_train).toarray()
-        # X_test = transformer.transform(X_test).toarray()
+        # tf_idf, comment in and out to use
+        transformer = TfidfTransformer(smooth_idf=False)
+        transformer.fit(X_train)
+        X_train = transformer.transform(X_train).toarray()
+        X_test = transformer.transform(X_test).toarray()
 
         targets, Y_train = lexelt.get_targets()
         _, Y_test = test_lexelt.get_targets(targets)
