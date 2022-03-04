@@ -102,11 +102,11 @@ def main(args):
         feature_names, X_train = lexelt.get_features()
         _, X_test = test_lexelt.get_features(feature_names)
 
-        # tf_idf, comment in and out to use
-        transformer = TfidfTransformer(smooth_idf=False)
-        transformer.fit(X_train)
-        X_train = transformer.transform(X_train).toarray()
-        X_test = transformer.transform(X_test).toarray()
+        # # tf_idf, comment in and out to use
+        # transformer = TfidfTransformer(smooth_idf=True)
+        # transformer.fit(X_train)
+        # X_train = transformer.transform(X_train).toarray()
+        # X_test = transformer.transform(X_test).toarray()
 
         targets, Y_train = lexelt.get_targets()
         _, Y_test = test_lexelt.get_targets(targets)
@@ -122,14 +122,14 @@ def main(args):
 
     print("Decision list score: {:.2%}".format(correct / total))
 
-    # # Our Debugging Below
+    # Our Debugging Below
+
+    # train_data = get_data(args.traindata)
+    # get_key(args.trainkey, train_data)
     #
-    # # train_data = get_data(args.traindata)
-    # # get_key(args.trainkey, train_data)
-    # #
-    # # test_data = get_data(args.testdata)
-    # # get_key(args.testkey, test_data)
-    #
+    # test_data = get_data(args.testdata)
+    # get_key(args.testkey, test_data)
+
     # train_fp = open("C:/Users/rrros/OneDrive/Documents/COMPSCI/CMPU366/senseval3/train/EnglishLS.train", "r")
     # train_fp = open("/data/366/senseval3/train/EnglishLS.train", "r")
     # train_data = get_data(train_fp)
@@ -160,6 +160,7 @@ def main(args):
     # get_key(testkey_fp, test_data)
     # test_feature_names, X_test = lexelt2.get_features()
     # test_answer_labels, Y_test = lexelt2.get_targets()
+    # print(str(1 in X_test))
     #
     # d2.fit(X_test, Y_test)
     # print(d2.predict_one(X_test[0]))
